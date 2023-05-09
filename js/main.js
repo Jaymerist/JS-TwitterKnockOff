@@ -1,5 +1,5 @@
 // this is our javascript file.
-const USER = "Your name"
+const USER = "Mihiri Kamiss"
 
 // Please refer to the "Required Tasks in the assignments PDF"
 
@@ -18,10 +18,17 @@ const USER = "Your name"
     </li>
 */
 
-//validation for forms
 
+
+let cheepList = document.querySelector(".cheep-list")
 let cheepForm = document.querySelector("#cheep-form")
+let cheepTextBox = document.querySelector("#cheep-input")
+let gifMenuBox = document.querySelector("#cheep-select-gif")
 
+//focus on cheep text box
+cheepTextBox.focus()
+
+//validation for forms
 cheepForm.addEventListener("submit", (event)=> {
     event.preventDefault()
 
@@ -33,12 +40,10 @@ cheepForm.addEventListener("submit", (event)=> {
     let cheepText = cheepElement.value
     let gifMenu = gifMenuElement.value
 
-    let isFormValid
+    let isFormValid = true
 
     //cheep text validation
-    let isCheepValid = emptyText(cheepText)
-    console.log(cheepText.value)
-    console.log(gifMenu.value)
+    let isCheepValid = (isValueNotEmpty(cheepText) && !isValueOverLimit(cheepText))
     if(!isCheepValid){
         cheepElement.classList.add("is-invalid")
         isFormValid = false
@@ -48,7 +53,6 @@ cheepForm.addEventListener("submit", (event)=> {
 
     //cheep text validation
     let isGifValid = emptySelection(gifMenu)
-    console.log(isGifValid)
     if(!isGifValid){
         gifMenuElement.classList.add("is-invalid")
         isFormValid = false
@@ -57,8 +61,14 @@ cheepForm.addEventListener("submit", (event)=> {
     }
 
     if (!isFormValid) {
-        console.log("form is not valid")
+        return
     }
+
+    addCheep(cheepText, gifMenu)
+
+
+    //refocus
+    cheepTextBox.focus()
 
     //reset values
     cheepElement.value = ""
@@ -68,18 +78,65 @@ cheepForm.addEventListener("submit", (event)=> {
 
 //validation functions
 
-const emptyText = (value) => {
-    if (value !== "" || value !== "cheep this") { 
-        return false
-    } else {
+const isValueNotEmpty = (value) => {
+    if (value !== "") {
         return true
     }
+    return false
+}
+
+const isValueOverLimit = (value) => {
+    if (value.length > 50) {
+        return true
+    }
+    return false
 }
 
 const emptySelection = (value) => {
-    if (value !== "Select a gif") { 
-        return false
-    } else {
+    if (value !== "") { 
         return true
+    } else {
+        return false
     }
 }
+
+//add cheep to page function
+
+const addCheep = (cheepText, gif) => {
+    let newCheep = `<li class="text-center list-group-item list-group-item-action" aria-current="true">
+        <p>Author: ${USER}</p>
+        <div class="row h-100">
+            <div class="col-sm">
+                <img src="./img/${gif}" class="rounded float-start" alt="${gif}">    
+            </div>
+            <div class="col-sm h-100">
+                <h5 class="mb-1">${cheepText}</5>
+            </div>
+        </div>
+    </li>`
+
+    cheepList.innerHTML = newCheep + cheepList.innerHTML 
+}
+
+
+//bonus
+
+//remove invalid text message when user starts typing
+
+
+
+cheepTextBox.addEventListener("keydown", (event) => {
+
+    event.target.classList.remove("is-invalid")
+
+})
+
+gifMenuBox.addEventListener("click", (event) => {
+
+    let selection = gifMenuBox.value
+
+    if(emptySelection(selection)){
+        event.target.classList.remove("is-invalid")
+    }
+})
+
